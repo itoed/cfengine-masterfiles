@@ -1,0 +1,13 @@
+masterfiles:
+  image: itoed/cfengine-masterfiles
+  volumes:
+    - .:/itoed/source:ro
+  environment:
+    - "MASTERFILES_SOURCE=/itoed/source"
+    - "MASTERFILES_WORKDIR=/itoed/work"
+    - "MASTERFILES_HOME=/itoed/output"
+    - "MASTERFILES_OUTPUT=/itoed/output/masterfiles"
+    - "MASTERFILES_TEST_OUTPUT=/itoed/output/test-policy"
+  command:
+    - bash
+    - /itoed/source/itoed-build.sh

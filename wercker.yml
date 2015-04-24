@@ -1,0 +1,31 @@
+box: itoed/cfengine-masterfiles
+build:
+  steps:
+    - script:
+        name: Build masterfiles
+        code: |
+          export MASTERFILES_SOURCE=/pipeline/source
+          export MASTERFILES_WORKDIR=/pipeline/work
+          export MASTERFILES_HOME=/pipeline/output
+          export MASTERFILES_OUTPUT=/pipeline/output/masterfiles
+          export MASTERFILES_TEST_OUTPUT=/pipeline/output/test-policy
+          bash /pipeline/source/itoed-build.sh
+          cp -r /pipeline/source /pipeline/output/source-project
+          cp /pipeline/source/itoed-deploy.sh /pipeline/output/
+          cp /pipeline/source/known_hosts /pipeline/output/
+
+deploy:
+  steps:
+    - add-ssh-key:
+        keyname: ITOBOT
+    - script:
+        name: Deploy masterfiles
+        code: |
+          export MASTERFILES_SOURCE=/pipeline/source/source-project
+          export MASTERFILES_SOURCE_BRANCH="$WERCKER_GIT_BRANCH"
+          export MASTERFILES_OUTPUT=/pipeline/source/masterfiles
+          export MASTERFILES_RELEASE_URL=git@bitbucket.org:itoed/cfengine-masterfiles-releases
+          export MASTERFILES_RELEASE=/pipeline/release/masterfiles
+          export MASTERFILES_RELEASE_BRANCH=master
+          cp /pipeline/source/known_hosts /root/.ssh/
+          bash /pipeline/source/itoed-deploy.sh

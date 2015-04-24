@@ -1,0 +1,13 @@
+bundle agent itoed_update
+{
+  commands:
+      "/usr/bin/git"
+        args => "pull -q",
+        contain => in_dir("/var/cfengine/masterfiles");
+}
+
+body contain in_dir(dir)
+{
+  useshell => "noshell";
+  chdir => "$(dir)";
+}
