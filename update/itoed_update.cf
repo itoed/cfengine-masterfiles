@@ -1,6 +1,10 @@
 bundle agent itoed_update
 {
+  classes:
+      "is_git_repository" expression => isdir("/var/cfengine/masterfiles/.git");
+
   commands:
+    is_git_repository::
       "/usr/bin/git"
         args => "pull -q",
         contain => in_dir("/var/cfengine/masterfiles");
