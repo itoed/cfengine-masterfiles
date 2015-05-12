@@ -62,11 +62,6 @@ disable_pkg='"disable_inventory_package_refresh" expression =>'
 sed -i "s/$disable_pkg \"!any\"/$disable_pkg \"any\"/" \
     "$MASTERFILES_TEST_OUTPUT/def.cf"
 
-# Prevent inventory bundle from refreshing packages
-disable_pkg='"disable_inventory_package_refresh" expression =>'
-sed -i "s/$disable_pkg \"!any\"/$disable_pkg \"any\"/" \
-    "$MASTERFILES_TEST_OUTPUT/def.cf"
-
 # Enable autorun bundles for test
 enable_autorun='"services_autorun" expression =>'
 sed -i "s/$enable_autorun \"!any\"/$enable_autorun \"any\"/" \
