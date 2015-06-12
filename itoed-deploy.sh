@@ -2,6 +2,11 @@
 
 set -e
 
+echo "Public:"
+echo "$ITOBOT_PUBLIC"
+echo "Private:"
+echo "$ITOBOT_PRIVATE"
+
 # Here is the source as pushed to the repository
 if [ -z "$MASTERFILES_SOURCE" ] ; then
     echo "Missing environment variable: MASTERFILES_SOURCE" >&2
