@@ -1,17 +1,52 @@
 bundle agent itoed_update
 {
   classes:
-      "is_git_repository" expression => isdir("/var/cfengine/masterfiles/.git");
+      "is_git_repository" expression => isdir("$(sys.masterdir)/.git");
 
   commands:
     is_git_repository::
       "/usr/bin/git"
-        args => "pull -q",
-        contain => in_dir("/var/cfengine/masterfiles");
+        args => "rev-parse --abbrev-ref --symbolic-full-name @{u}",
+        classes => promise_kept("itoed_update_has_upstream"),
+        contain => in_dir_silent("$(sys.masterdir)");
+
+    itoed_update_has_upstream::
+      "/usr/bin/git"
+        args => "fetch",
+        contain => in_dir_silent("$(sys.masterdir)");
+
+      "/usr/bin/test"
+        args => '"`git rev-parse @`" != "`git rev-parse @{u}`"',
+        classes => promise_kept("itoed_update_has_changes"),
+        contain => in_dir_shell("$(sys.masterdir)");
+
+    itoed_update_has_changes::
+      "/usr/bin/git"
+        args => "reset --hard @{u}",
+        contain => in_dir("$(sys.masterdir)");
+}
+
+body contain in_dir_silent(dir)
+{
+  useshell => "noshell";
+  chdir => "$(dir)";
+  no_output => "true";
 }
 
 body contain in_dir(dir)
 {
   useshell => "noshell";
   chdir => "$(dir)";
+}
+
+body contain in_dir_shell(dir)
+{
+  useshell => "useshell";
+  chdir => "$(dir)";
+}
+
+body classes promise_kept(classname)
+{
+  kept_returncodes => { "0" };
+  promise_kept => { "$(classname)" };
 }

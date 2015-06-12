@@ -20,7 +20,7 @@ branch.
 
 ### Build and test
 
-    docker-compose up
+    docker-compose run --rm masterfiles
 
 ### Build and test with Wercker CLI
 
